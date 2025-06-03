@@ -1,0 +1,427 @@
+{
+  "version": "5.2.1",
+  "flags": {},
+  "shapes": [
+    {
+      "label": "tumor",
+      "points": [
+        [
+          56.439293598234,
+          55.911699779249446
+        ],
+        [
+          57.65342163355409,
+          53.92494481236203
+        ],
+        [
+          59.860927152317885,
+          54.2560706401766
+        ],
+        [
+          61.51655629139073,
+          56.02207505518764
+        ],
+        [
+          62.62030905077263,
+          58.00883002207505
+        ],
+        [
+          62.17880794701986,
+          61.09933774834437
+        ],
+        [
+          58.31567328918322,
+          60.98896247240618
+        ],
+        [
+          55.44591611479029,
+          60.98896247240618
+        ],
+        [
+          54.562913907284766,
+          59.11258278145696
+        ]
+      ],
+      "group_id": null,
+      "description": "",
+      "shape_type": "polygon",
+      "flags": {}
+    },
+    {
+      "label": "tumor",
+      "points": [
+        [
+          55.3355408388521,
+          50.83443708609271
+        ],
+        [
+          57.21192052980133,
+          50.613686534216335
+        ],
+        [
+          57.98454746136865,
+          51.71743929359823
+        ],
+        [
+          57.54304635761589,
+          52.93156732891833
+        ],
+        [
+          56.218543046357624,
+          53.92494481236203
+        ],
+        [
+          55.00441501103752,
+          53.37306843267108
+        ]
+      ],
+      "group_id": null,
+      "description": "",
+      "shape_type": "polygon",
+      "flags": {}
+    },
+    {
+      "label": "tumor",
+      "points": [
+        [
+          66.70419426048565,
+          55.02869757174393
+        ],
+        [
+          68.80132450331126,
+          54.80794701986755
+        ],
+        [
+          69.90507726269315,
+          56.02207505518764
+        ],
+        [
+          69.5739514348786,
+          57.015452538631344
+        ],
+        [
+          68.24944812362031,
+          57.45695364238411
+        ],
+        [
+          66.2626931567329,
+          57.677704194260485
+        ]
+      ],
+      "group_id": null,
+      "description": "",
+      "shape_type": "polygon",
+      "flags": {}
+    },
+    {
+      "label": "tumor",
+      "points": [
+        [
+          68.3598233995585,
+          65.51434878587196
+        ],
+        [
+          71.45033112582782,
+          65.40397350993376
+        ],
+        [
+          71.89183222958057,
+          67.50110375275938
+        ],
+        [
+          71.6710816777042,
+          70.03973509933775
+        ],
+        [
+          69.3532008830022,
+          70.92273730684326
+        ],
+        [
+          66.81456953642385,
+          69.70860927152317
+        ],
+        [
+          66.59381898454747,
+          67.1699779249448
+        ]
+      ],
+      "group_id": null,
+      "description": "",
+      "shape_type": "polygon",
+      "flags": {}
+    },
+    {
+      "label": "tumor",
+      "points": [
+        [
+          65.71081677704194,
+          60.437086092715234
+        ],
+        [
+          68.58057395143489,
+          59.554083885209714
+        ],
+        [
+          71.78145695364239,
+          58.78145695364238
+        ],
+        [
+          75.09271523178808,
+          59.6644591611479
+        ],
+        [
+          75.86534216335541,
+          61.98233995584989
+        ],
+        [
+          74.65121412803532,
+          63.74834437086093
+        ],
+        [
+          70.5673289183223,
+          63.63796909492274
+        ],
+        [
+          67.36644591611478,
+          65.18322295805739
+        ],
+        [
+          65.37969094922738,
+          66.50772626931567
+        ],
+        [
+          63.9448123620309,
+          67.83222958057394
+        ],
+        [
+          62.84105960264901,
+          65.73509933774834
+        ],
+        [
+          62.50993377483444,
+          62.9757174392936
+        ]
+      ],
+      "group_id": null,
+      "description": "",
+      "shape_type": "polygon",
+      "flags": {}
+    },
+    {
+      "label": "tumor",
+      "points": [
+        [
+          74.9823399558499,
+          56.35320088300221
+        ],
+        [
+          77.74172185430464,
+          55.02869757174393
+        ],
+        [
+          79.61810154525386,
+          55.02869757174393
+        ],
+        [
+          80.16997792494482,
+          58.00883002207505
+        ],
+        [
+          78.40397350993378,
+          58.78145695364238
+        ],
+        [
+          76.74834437086093,
+          58.33995584988963
+        ],
+        [
+          75.31346578366445,
+          57.567328918322296
+        ]
+      ],
+      "group_id": null,
+      "description": "",
+      "shape_type": "polygon",
+      "flags": {}
+    },
+    {
+      "label": "tumor",
+      "points": [
+        [
+          44.62913907284768,
+          88.80353200883002
+        ],
+        [
+          48.16114790286976,
+          86.37527593818984
+        ],
+        [
+          51.47240618101546,
+          85.82339955849889
+        ],
+        [
+          52.46578366445917,
+          87.03752759381898
+        ],
+        [
+          53.790286975717436,
+          88.80353200883002
+        ],
+        [
+          54.12141280353201,
+          90.79028697571744
+        ],
+        [
+          53.790286975717436,
+          93.77041942604856
+        ],
+        [
+          52.02428256070641,
+          95.64679911699778
+        ],
+        [
+          50.03752759381899,
+          96.86092715231787
+        ],
+        [
+          47.719646799117,
+          97.96467991169978
+        ],
+        [
+          45.18101545253863,
+          98.40618101545253
+        ],
+        [
+          42.973509933774835,
+          98.18543046357615
+        ],
+        [
+          41.64900662251656,
+          93.99116997792494
+        ],
+        [
+          42.53200883002208,
+          91.78366445916114
+        ]
+      ],
+      "group_id": null,
+      "description": "",
+      "shape_type": "polygon",
+      "flags": {}
+    },
+    {
+      "label": "tumor",
+      "points": [
+        [
+          67.58719646799118,
+          82.18101545253862
+        ],
+        [
+          70.89845474613686,
+          79.97350993377482
+        ],
+        [
+          75.64459161147903,
+          81.51876379690948
+        ],
+        [
+          76.19646799116998,
+          85.7130242825607
+        ],
+        [
+          74.8719646799117,
+          88.58278145695364
+        ],
+        [
+          70.45695364238411,
+          89.35540838852096
+        ],
+        [
+          66.2626931567329,
+          87.25827814569536
+        ],
+        [
+          65.71081677704194,
+          84.38852097130243
+        ]
+      ],
+      "group_id": null,
+      "description": "",
+      "shape_type": "polygon",
+      "flags": {}
+    },
+    {
+      "label": "tumor",
+      "points": [
+        [
+          79.17660044150111,
+          75.11699779249447
+        ],
+        [
+          82.4878587196468,
+          72.90949227373068
+        ],
+        [
+          85.46799116997792,
+          69.59823399558498
+        ],
+        [
+          92.2008830022075,
+          70.26048565121413
+        ],
+        [
+          98.82339955849889,
+          74.8962472406181
+        ],
+        [
+          100.81015452538631,
+          78.98013245033111
+        ],
+        [
+          104.56291390728477,
+          84.6092715231788
+        ],
+        [
+          105.99779249448123,
+          89.24503311258277
+        ],
+        [
+          103.0176600441501,
+          93.66004415011037
+        ],
+        [
+          98.16114790286976,
+          96.5298013245033
+        ],
+        [
+          92.97350993377484,
+          96.86092715231787
+        ],
+        [
+          86.68211920529801,
+          95.86754966887416
+        ],
+        [
+          82.26710816777042,
+          91.23178807947019
+        ],
+        [
+          81.3841059602649,
+          87.03752759381898
+        ],
+        [
+          79.50772626931567,
+          81.4083885209713
+        ]
+      ],
+      "group_id": null,
+      "description": "",
+      "shape_type": "polygon",
+      "flags": {}
+    }
+  ],
+  "imagePath": "C19005B_0000346-Anonymized-202105281616-D-R.png",
+  "imageData": "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",
+  "imageHeight": 102,
+  "imageWidth": 128
+}

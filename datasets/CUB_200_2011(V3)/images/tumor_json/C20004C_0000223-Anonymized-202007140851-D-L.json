@@ -1,0 +1,120 @@
+{
+  "version": "5.2.1",
+  "flags": {},
+  "shapes": [
+    {
+      "label": "tumor",
+      "points": [
+        [
+          70.23620309050773,
+          86.59602649006622
+        ],
+        [
+          74.9823399558499,
+          85.38189845474614
+        ],
+        [
+          81.05298013245033,
+          84.27814569536423
+        ],
+        [
+          85.35761589403974,
+          86.37527593818984
+        ],
+        [
+          86.01986754966887,
+          91.78366445916114
+        ],
+        [
+          83.70198675496688,
+          94.98454746136865
+        ],
+        [
+          77.30022075055187,
+          95.75717439293598
+        ],
+        [
+          70.89845474613686,
+          95.09492273730683
+        ],
+        [
+          69.13245033112582,
+          90.90066225165562
+        ]
+      ],
+      "group_id": null,
+      "description": "",
+      "shape_type": "polygon",
+      "flags": {}
+    },
+    {
+      "label": "tumor",
+      "points": [
+        [
+          55.556291390728475,
+          79.2008830022075
+        ],
+        [
+          61.07505518763797,
+          83.83664459161147
+        ],
+        [
+          64.49668874172185,
+          86.37527593818984
+        ],
+        [
+          66.81456953642385,
+          89.79690949227373
+        ],
+        [
+          66.59381898454747,
+          93.88079470198674
+        ],
+        [
+          61.626931567328924,
+          95.31567328918321
+        ],
+        [
+          57.76379690949227,
+          95.53642384105959
+        ],
+        [
+          54.562913907284766,
+          94.10154525386312
+        ],
+        [
+          49.375275938189844,
+          93.77041942604856
+        ],
+        [
+          47.05739514348787,
+          91.01103752759381
+        ],
+        [
+          45.40176600441501,
+          86.7064017660044
+        ],
+        [
+          50.69977924944813,
+          86.37527593818984
+        ],
+        [
+          54.452538631346584,
+          85.82339955849889
+        ],
+        [
+          54.562913907284766,
+          82.51214128035319
+        ]
+      ],
+      "group_id": null,
+      "description": "",
+      "shape_type": "polygon",
+      "flags": {}
+    }
+  ],
+  "imagePath": "C20004C_0000223-Anonymized-202007140851-D-L.png",
+  "imageData": "iVBORw0KGgoAAAANSUhEUgAAAIAAAABmCAAAAAAmSMaIAAAEsElEQVR4nO2YTYsdRRSG31OnurrvvfOZmSQaIwEdjUIgmK0IrkT3LkRcif8gv8eduHLjzj/gVhDFD9DgJoR8TJKZufd2d9X5cJEoCFl0T0bd9LPrXpx6uqqaOm8BExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTE/8z9LwF+B9P+t8K8LNejnQ4vcDfo19sYmQKLvLbKRTi841+cJRJ00uXFqGK0HW3/BoAj1E4lcDT4d/d4B/XSl3euXbQLCrS5cnh9dufA+DhBqcRYAD44Nxia+/kJyRyvb/xmm3uz7F+dPfO7s07X44xGC/AAPDxi/t15XabmhDcwi+rcvAO86yuY2D65IsRBqMFGABuXn093P/11t0HvEdMVP2RZ5tHXEea7bRdnz/8arjBWAEG8NmVSxdD7vPmWhsN3KTt83uLF3IfjENVL7a2l+9/M9hgpAAD+PTKwW5db+9fOXn8w2OkRsL+G7tyuGqsiRCqmtmiefvboRXHCTCAj14+uLzHzVblcnz+UNgf5iZ63z2YEWk+ysXjbGt547uBUzBKgAG8t3PuwoV53EjsgldfDsuTzbt69FCo3NuZaZu7theumxoDF2HsHnirgrt4ZDJz2mBsP6z6x4dW1+XoqIJLaVdqcZaufz+s4BgBBq4u5jXadaxyce+0iu6wftmxdATEYJJL7opSqt/8+awFGMDW3u5OlZfWzZxkjcVGaZf3ll0Gw+HEJppFeyXmMGwNxi3Bjb2dzYQ1tZEsSeH2KLfLR0dZDHAD2NB3GeaG8Myj8jkFrm3OG/a8kpbbPs0YKyr9+nit5jCHKpFJyUZFCf7KrbMVYKCuokoX4NlyX2VGpZ5XJ0JQd6iKOblZ7+Yg+KCyo2agCq59YC9Vkexd5ATt11kJ5gZTEeVoDhHJBh+0CcYIXFWTkhFUsmnuc82CknNnYBS4FxGLIirqYuY+qDUZI2Cm0gelkiKXdr3caDJlkWzBIWbWqxoRiWsWG9psjRIouSevSXJi7dbqpVJTMWXAs0nv6mCHWRHJYmcu8Pu1PpGKchKydZ8hIaiYA4CKaVEzREBNOi3lXzgN12GV00xDqmG577UEVgUAB4p4r0KIIGgRXZ65gDJyK1XqK0rElNd9igl/NYieraiaMjGp9Wqa7w0qO6ItZ+ByxVUMzDG4dm2oI8DMACCaM8EkMilJgcry+Mz/AqATqpgqRCZtW6QKzBwCAMutggAvUCjUlIYFhDHBhIFdRiBmBih3CIkRODBYoa0+/R4FZUJ7MkxgZD8gDgQJxIC6clshaRQWhUhGfDKkxG7gSYSR0YyBLRjAFAiqUAYzVwyQossIDDz5+7XLAyPa2I7ouAGCIUa4wTNb8MxgwMg4pDXnKJbk2bn1WYwLpwwkEBgIxiiAcoWYFAzoSWjg3MGDgVZDM2oYJaBANiczR3B3AlBgnbu7BCqioU+BhFIzuOQ4AQAQUqVIZsahkJF4sOChIoKB2GQ+RzkcHNJHCiiAviCSEQW3mMwouBcqTSKxYk2zGRfz1fCKY2dAAaBYXVch1jSXSGYWQnBvCHm2vVw4qWH4LcUpbkgGbfDB8Xz8HjjFRdQZCwwxGC75J6PErlfredlMAAAAAElFTkSuQmCC",
+  "imageHeight": 102,
+  "imageWidth": 128
+}

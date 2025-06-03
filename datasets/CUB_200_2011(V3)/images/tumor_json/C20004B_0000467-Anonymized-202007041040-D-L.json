@@ -1,0 +1,87 @@
+{
+  "version": "5.2.1",
+  "flags": {},
+  "shapes": [
+    {
+      "label": "tumor",
+      "points": [
+        [
+          42.3112582781457,
+          70.03973509933775
+        ],
+        [
+          48.050772626931575,
+          67.39072847682118
+        ],
+        [
+          56.439293598234,
+          66.83885209713024
+        ],
+        [
+          66.37306843267108,
+          65.51434878587196
+        ],
+        [
+          72.6644591611479,
+          65.40397350993376
+        ],
+        [
+          81.3841059602649,
+          67.1699779249448
+        ],
+        [
+          85.57836644591612,
+          69.70860927152317
+        ],
+        [
+          88.55849889624724,
+          80.3046357615894
+        ],
+        [
+          88.44812362030905,
+          86.48565121412803
+        ],
+        [
+          86.46136865342163,
+          92.2251655629139
+        ],
+        [
+          77.18984547461369,
+          94.10154525386312
+        ],
+        [
+          60.30242825607064,
+          91.78366445916114
+        ],
+        [
+          48.381898454746135,
+          92.44591611479028
+        ],
+        [
+          37.8962472406181,
+          90.45916114790286
+        ],
+        [
+          34.58498896247241,
+          86.48565121412803
+        ],
+        [
+          33.48123620309051,
+          78.42825607064017
+        ],
+        [
+          36.90286975717439,
+          72.6887417218543
+        ]
+      ],
+      "group_id": null,
+      "description": "",
+      "shape_type": "polygon",
+      "flags": {}
+    }
+  ],
+  "imagePath": "C20004B_0000467-Anonymized-202007041040-D-L.png",
+  "imageData": "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",
+  "imageHeight": 102,
+  "imageWidth": 128
+}

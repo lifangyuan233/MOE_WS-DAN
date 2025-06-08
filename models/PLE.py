@@ -49,6 +49,7 @@ class Expert_net(nn.Module):
 
 class CGCBlock(nn.Module):
     """层级化专家模块 (包含任务专属和共享专家)"""
+    # 64/128   128  2  1  3
     def __init__(self, in_channels, expert_channels, num_task_experts=1, num_shared_experts=1, GateNum=3):
         super(CGCBlock, self).__init__()
 

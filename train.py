@@ -754,6 +754,7 @@ def train(**kwargs):
         mask_background = mask_background.to(device)
         X = X.to(device)
         y = y.to(device)
+        print(X.shape)
 
         with torch.no_grad():
             mask_origin0 = resize_mask_if_needed(mask_origin, (config.image_size[0] // 2, config.image_size[0] // 2))

@@ -457,9 +457,9 @@ def main():
             y = y.to(device)
 
             # WS-DAN
-            a, b, feature_matrix, y_pred_raw,  y_pred_crop, y_pred_drop, outB = net(X)
+            a, b, feature_matrix, y_pred_raw, outB = net(X)
 
-            y_pred = (y_pred_raw + y_pred_crop) / 2.
+            y_pred = y_pred_raw
 
       #      _, predicted_raw = torch.max(y_pred_raw, 1)
       #      _, predicted_crop = torch.max(y_pred_crop, 1)

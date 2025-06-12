@@ -185,44 +185,8 @@ class DeepExpertNetwork(nn.Module):
             # y_pred_crop torch.Size([B, 2])
             # y_pred_drop torch.Size([B, 2])
             # outB torch.Size([B, 2, 224, 224])
-
             
-
-            with torch.no_grad():
-                crop_images = batch_augment(x, attention_map[:, :1, :, :], mode='crop', theta=(0.4, 0.6), padding_ratio=0.1)
-            
-            crop_images = self.stem(crop_images)
-            # crop images forward
-            a0 = crop_images
-            s0 = crop_images
-            b0 = crop_images
-
-            for index, block in enumerate(self.blocks):
-                if index != len(self.blocks) - 1:
-                    a0, s0, b0 = block(a0, s0, b0)
-                else:
-                    a0, b0 = block(a0, s0, b0)
-
-
-            y_pred_crop, _, _ = self.taskA_head(a0)
-
-            with torch.no_grad():
-                drop_images = batch_augment(x, attention_map[:, 1:, :, :], mode='drop', theta=(0.2, 0.5))
-
-            drop_images = self.stem(drop_images)
-            a1 = drop_images
-            s1 = drop_images
-            b1 = drop_images
-
-            for index, block in enumerate(self.blocks):
-                if index != len(self.blocks) - 1:
-                    a1, s1, b1 = block(a1, s1, b1)
-                else:
-                    a1, b1 = block(a1, s1, b1)
-            # drop images forward
-            y_pred_drop, _, _ = self.taskA_head(a1)
-            
-            return a, b, feature_matrix, y_pred_raw,  y_pred_crop, y_pred_drop, outB
+            return a, b, feature_matrix, y_pred_raw, outB
         
         else:
             # print("PLE处于testing")
@@ -230,23 +194,7 @@ class DeepExpertNetwork(nn.Module):
                 y_pred_raw, feature_matrix, attention_map = self.taskA_head(a)
                 outB = self.taskB_head(b)
 
-                crop_images = batch_augment(x, attention_map, mode='crop', theta=0.1, padding_ratio=0.05)
-
-                crop_images = self.stem(crop_images)
-                a0 = crop_images
-                s0 = crop_images
-                b0 = crop_images
-
-                for index, block in enumerate(self.blocks):
-                    if index != len(self.blocks) - 1:
-                        a0, s0, b0 = block(a0, s0, b0)
-                    else:
-                        a0, b0 = block(a0, s0, b0)
-                        
-                y_pred_crop, _, _ = self.taskA_head(a0)
-
-                
-                return a, b, feature_matrix, y_pred_raw,  y_pred_crop, None, outB
+                return a, b, feature_matrix, y_pred_raw, outB
 
 # # 示例使用
 # model = DeepExpertNetwork(mode='train')

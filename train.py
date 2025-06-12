@@ -769,7 +769,7 @@ def train(**kwargs):
         # Raw Image
         ##################################
         # raw images forward
-        a, b, feature_matrix, y_pred_raw,  y_pred_crop, y_pred_drop, outB = net(X)
+        a, b, feature_matrix, y_pred_raw, outB = net(X)
         # y_pred_raw, feature_matrix, attention_map = net(X)
 
         # Update Feature Center
@@ -778,9 +778,7 @@ def train(**kwargs):
 
 
         # loss
-        batch_loss = cross_entropy_loss(y_pred_raw, y) / 3. + \
-                     cross_entropy_loss(y_pred_crop, y) / 3. + \
-                     cross_entropy_loss(y_pred_drop, y) / 3. + \
+        batch_loss = cross_entropy_loss(y_pred_raw, y)  + \
                      center_loss(feature_matrix, feature_center_batch) + \
                      criterion(outB, masks0)
         
@@ -793,8 +791,6 @@ def train(**kwargs):
         with torch.no_grad():
             epoch_loss = loss_container(batch_loss.item())
             epoch_raw_acc = raw_metric(y_pred_raw, y)
-            epoch_crop_acc = crop_metric(y_pred_crop, y)
-            epoch_drop_acc = drop_metric(y_pred_drop, y)
             # epoch_raw_tp1, epoch_raw_tn1, epoch_raw_fp1, epoch_raw_fn1, epoch_raw_acc1, epoch_raw_sen1, epoch_raw_spe1 = raw_metric1(y_pred_raw, y)
             # epoch_crop_tp1, epoch_crop_tn1, epoch_crop_fp1, epoch_crop_fn1, epoch_crop_acc1,  epoch_crop_sen1, epoch_crop_spe1 = crop_metric1(y_pred_crop, y)
             # epoch_drop_tp1, epoch_drop_tn1, epoch_drop_fp1, epoch_drop_fn1, epoch_drop_acc1,  epoch_drop_sen1, epoch_drop_spe1 = drop_metric1(y_pred_drop, y)
@@ -808,9 +804,8 @@ def train(**kwargs):
    #         all_predictions_crop.append(predicted_crop.cpu().numpy())
    #         all_predictions_drop.append(predicted_drop.cpu().numpy())
         # end of this batch
-        batch_info = 'Loss {:.4f}, Raw Acc ({:.2f}, {:.2f}), Crop Acc ({:.2f}, {:.2f}), Drop Acc ({:.2f}, {:.2f})'.format(
-            epoch_loss, epoch_raw_acc[0], epoch_raw_acc[1],
-            epoch_crop_acc[0], epoch_crop_acc[1], epoch_drop_acc[0], epoch_drop_acc[1])
+        batch_info = 'Loss {:.4f}, Raw Acc ({:.2f}, {:.2f}))'.format(
+            epoch_loss, epoch_raw_acc[0], epoch_raw_acc[1])
         # batch_info1 = 'Raw Acc1 Sen1 Spe1 ({:.2f}, {:.2f}, {:.2f}), Crop Acc1 Sen1 Spe1 {:.2f}, {:.2f}, {:.2f}), Drop Acc1 Sen1 Spe1 ({:.2f}, {:.2f}, {:.2f})'.format(
         #     epoch_raw_acc1, epoch_raw_sen1, epoch_raw_spe1,
         #     epoch_crop_acc1, epoch_crop_sen1, epoch_crop_spe1, 
@@ -832,8 +827,6 @@ def train(**kwargs):
     # end of this epoch
     logs['train_{}'.format(loss_container.name)] = epoch_loss
     logs['train_raw_{}'.format(raw_metric.name)] = epoch_raw_acc
-    logs['train_crop_{}'.format(crop_metric.name)] = epoch_crop_acc
-    logs['train_drop_{}'.format(drop_metric.name)] = epoch_drop_acc
     logs['train_info'] = batch_info1
     end_time = time.time()
 
@@ -878,9 +871,9 @@ def validate(**kwargs):
             # Raw Image
             ##################################
             # y_pred_raw, _, attention_map = net(X)
-            a, b, feature_matrix, y_pred_raw,  y_pred_crop, y_pred_drop, outB = net(X)
+            a, b, feature_matrix, y_pred_raw, outB = net(X)
 
-            y_pred = (y_pred_raw + y_pred_crop) / 2.
+            y_pred = y_pred_raw
 
             _, predicted = torch.max(y_pred, 1)
 

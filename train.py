@@ -781,7 +781,6 @@ def train(**kwargs):
         batch_loss = cross_entropy_loss(y_pred_raw, y) / 3. + \
                      cross_entropy_loss(y_pred_crop, y) / 3. + \
                      cross_entropy_loss(y_pred_drop, y) / 3. + \
-                     center_loss(feature_matrix, feature_center_batch) + \
                      criterion(outB, masks0)
         
 

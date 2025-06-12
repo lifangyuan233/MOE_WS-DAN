@@ -54,7 +54,7 @@ class BAP(nn.Module):
         feature_matrix = torch.sign(feature_matrix) * torch.sqrt(torch.abs(feature_matrix) + EPSILON)
 
         # l2 normalization along dimension M and C
-        feature_matrix = F.normalize(feature_matrix, dim=-1)
+        # feature_matrix = F.normalize(feature_matrix, dim=-1)
         return feature_matrix
 
 

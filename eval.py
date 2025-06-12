@@ -407,7 +407,7 @@ def main():
     # Initialize model
     ##################################
     # net = WSDAN(num_classes=test_dataset.num_classes, M=config.num_attentions, net=config.net)
-    net = DeepExpertNetwork(in_channels=3, base_channels=64, expert_channels=128, num_blocks=2, num_task_experts=2, num_shared_experts=1, mode='test')
+    net = DeepExpertNetwork(in_channels=3, base_channels=64, expert_channels=128, num_blocks=2, num_shared_experts=2, mode='test')
 
 
     # Load ckpt and get state_dict

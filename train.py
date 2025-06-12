@@ -596,7 +596,7 @@ def main():
     logs = {}
     start_epoch = 0
 
-    net = DeepExpertNetwork(in_channels=3, base_channels=64, expert_channels=128, num_blocks=2, num_task_experts=2, num_shared_experts=1, mode='train')
+    net = DeepExpertNetwork(in_channels=3, base_channels=64, expert_channels=128, num_blocks=2, num_shared_experts=2, mode='train')
 
     # feature_center: size of (#classes, #attention_maps * #channel_features)
     # feature_center = torch.zeros(num_classes, config.num_attentions * net.num_features).to(device)

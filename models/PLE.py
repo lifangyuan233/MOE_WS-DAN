@@ -50,89 +50,48 @@ class Expert_net(nn.Module):
 class CGCBlock(nn.Module):
     """层级化专家模块 (包含任务专属和共享专家)"""
     # 64/128   128  2  1  3
-    def __init__(self, in_channels, expert_channels, num_task_experts=1, num_shared_experts=1, GateNum=3):
+    def __init__(self, in_channels, expert_channels, num_shared_experts=2, GateNum=1):
         super(CGCBlock, self).__init__()
 
         self.GateNum = GateNum #输出几个Gate的结果，2表示最后一层只输出两个任务的Gate，3表示还要输出中间共享层的Gate
         
         '''两个任务模块，一个共享模块'''
-        self.n_task = 2
         self.n_share = 1
 
-        self.taskA_experts = nn.ModuleList([
-            Expert_net(in_channels, expert_channels) 
-            for _ in range(num_task_experts)])
-        
         self.shared_experts = nn.ModuleList([
             Expert_net(in_channels, expert_channels) 
             for _ in range(num_shared_experts)])
-        
-        self.taskB_experts = nn.ModuleList([
-            Expert_net(in_channels, expert_channels) 
-            for _ in range(num_task_experts)])
 
-        # 门控网络
-        self.gateA = nn.Sequential(
+        self.gateS = nn.Sequential(
             nn.AdaptiveAvgPool2d(1),
             nn.Flatten(),
             nn.Linear(in_channels, 128),
             nn.ReLU(),
-            nn.Linear(128, num_task_experts + num_shared_experts),
+            nn.Linear(128, num_shared_experts),
             nn.Softmax(dim=1))
 
-        if GateNum == 3:
-            self.gateS = nn.Sequential(
-                nn.AdaptiveAvgPool2d(1),
-                nn.Flatten(),
-                nn.Linear(in_channels, 128),
-                nn.ReLU(),
-                nn.Linear(128, 2*num_task_experts + num_shared_experts),
-                nn.Softmax(dim=1))
-        
-        self.gateB = nn.Sequential(
-            nn.AdaptiveAvgPool2d(1),
-            nn.Flatten(),
-            nn.Linear(in_channels, 128),
-            nn.ReLU(),
-            nn.Linear(128, num_task_experts + num_shared_experts),
-            nn.Softmax(dim=1))
         
 
-    def forward(self, x_A, x_S, x_B):
-        bs, _, h, w = x_A.shape
+    def forward(self, x_S):
+        bs, _, h, w = x_S.shape
         
         # 生成专家特征
-        experts_A_out = [e(x_A) for e in self.taskA_experts]  # 各专家输出形状: (bs, ec, h, w)
+        # 各专家输出形状: (bs, ec, h, w)
         experts_S_out = [e(x_S) for e in self.shared_experts]
-        experts_B_out = [e(x_B) for e in self.taskB_experts]
-        
-        # 门控权重计算
-        gate_weights_A = self.gateA(x_A).unsqueeze(-1).unsqueeze(-1).unsqueeze(-1)  # (bs, num_experts, 1, 1, 1)
-        if self.GateNum == 3:
-            gate_weights_S = self.gateS(x_S).unsqueeze(-1).unsqueeze(-1).unsqueeze(-1)  # (bs, num_experts, 1, 1, 1)
-        gate_weights_B = self.gateB(x_B).unsqueeze(-1).unsqueeze(-1).unsqueeze(-1)  # (bs, num_experts, 1, 1, 1)
-        
-        # 组合专家输出
-        combined_A = torch.stack(experts_A_out + experts_S_out, dim=1)  # (bs, num_total, ec, h, w)
-        Gate_A_out = (combined_A * gate_weights_A).sum(dim=1)
 
-        if self.GateNum == 3:
-            combined_S = torch.stack(experts_A_out + experts_S_out + experts_B_out, dim=1)  # (bs, num_total, ec, h, w)
-            Gate_S_out = (combined_S * gate_weights_S).sum(dim=1)
+        gate_weights_S = self.gateS(x_S).unsqueeze(-1).unsqueeze(-1).unsqueeze(-1)  # (bs, num_experts, 1, 1, 1)
+
+        combined_S = torch.stack(experts_S_out, dim=1)  # (bs, num_total, ec, h, w)
+        Gate_S_out = (combined_S * gate_weights_S).sum(dim=1)
+
         
-        combined_B = torch.stack(experts_B_out + experts_S_out, dim=1)
-        Gate_B_out = (combined_B * gate_weights_B).sum(dim=1)
-        
-        if self.GateNum == 3:
-            return Gate_A_out, Gate_S_out, Gate_B_out
-        else:
-            return Gate_A_out, Gate_B_out
+        return Gate_S_out
 
 
 
 class DeepExpertNetwork(nn.Module):
     """深度多专家网络"""
-    def __init__(self, in_channels=3, base_channels=64, expert_channels=128, num_blocks=2, num_task_experts=2, num_shared_experts=1, mode='train'):
+    def __init__(self, in_channels=3, base_channels=64, expert_channels=128, num_blocks=2, num_shared_experts=2, mode='train'):
         super(DeepExpertNetwork, self).__init__()
         self.mode = mode
         # 基础特征提取
@@ -149,7 +108,7 @@ class DeepExpertNetwork(nn.Module):
             # 在特定层进行下采样
             stride = 2 if i in [1, num_blocks//2 + 1] else 1
             
-            block = CGCBlock(in_channels=current_channels, expert_channels=expert_channels, num_task_experts=num_task_experts, num_shared_experts=num_shared_experts, GateNum=3 if i < num_blocks-1 else 2) # 最后一层只用任务门控
+            block = CGCBlock(in_channels=current_channels, expert_channels=expert_channels, num_shared_experts=num_shared_experts, GateNum=1) # 最后一层只用任务门控
             self.blocks.append(block)
             current_channels = expert_channels
         
@@ -161,16 +120,12 @@ class DeepExpertNetwork(nn.Module):
 
     def forward(self, x):
         x0 = self.stem(x)  # 初始下采样
-        
-        a = x0
+
         s = x0
-        b = x0
 
         for index, block in enumerate(self.blocks):
-            if index != len(self.blocks) - 1:
-                a, s, b = block(a, s, b)
-            else:
-                a, b = block(a, s, b)
+            s = block(s)
+
 
         # print(a.shape, b.shape)   # a: [B, 128, 224, 224])   # b: [B, 128, 224, 224])
         # 任务预测
@@ -178,8 +133,8 @@ class DeepExpertNetwork(nn.Module):
 
         if self.training:
             # print("PLE处于training")
-            y_pred_raw, feature_matrix, attention_map = self.taskA_head(a) 
-            outB = self.taskB_head(b)
+            y_pred_raw, feature_matrix, attention_map = self.taskA_head(s)
+            outB = self.taskB_head(s)
             # feature_matrix torch.Size([B, 65536])
             # y_pred_raw torch.Size([B, 2])
             # y_pred_crop torch.Size([B, 2])
@@ -193,60 +148,45 @@ class DeepExpertNetwork(nn.Module):
             
             crop_images = self.stem(crop_images)
             # crop images forward
-            a0 = crop_images
             s0 = crop_images
-            b0 = crop_images
 
             for index, block in enumerate(self.blocks):
-                if index != len(self.blocks) - 1:
-                    a0, s0, b0 = block(a0, s0, b0)
-                else:
-                    a0, b0 = block(a0, s0, b0)
+                s0 = block(s0)
 
 
-            y_pred_crop, _, _ = self.taskA_head(a0)
+            y_pred_crop, _, _ = self.taskA_head(s0)
 
             with torch.no_grad():
                 drop_images = batch_augment(x, attention_map[:, 1:, :, :], mode='drop', theta=(0.2, 0.5))
 
             drop_images = self.stem(drop_images)
-            a1 = drop_images
             s1 = drop_images
-            b1 = drop_images
 
             for index, block in enumerate(self.blocks):
-                if index != len(self.blocks) - 1:
-                    a1, s1, b1 = block(a1, s1, b1)
-                else:
-                    a1, b1 = block(a1, s1, b1)
+                s1 = block(s1)
             # drop images forward
-            y_pred_drop, _, _ = self.taskA_head(a1)
+            y_pred_drop, _, _ = self.taskA_head(s1)
             
-            return a, b, feature_matrix, y_pred_raw,  y_pred_crop, y_pred_drop, outB
+            return s1, s1, feature_matrix, y_pred_raw,  y_pred_crop, y_pred_drop, outB
         
         else:
             # print("PLE处于testing")
             with torch.no_grad():
-                y_pred_raw, feature_matrix, attention_map = self.taskA_head(a)
-                outB = self.taskB_head(b)
+                y_pred_raw, feature_matrix, attention_map = self.taskA_head(s)
+                outB = self.taskB_head(s)
 
                 crop_images = batch_augment(x, attention_map, mode='crop', theta=0.1, padding_ratio=0.05)
 
                 crop_images = self.stem(crop_images)
-                a0 = crop_images
                 s0 = crop_images
-                b0 = crop_images
 
                 for index, block in enumerate(self.blocks):
-                    if index != len(self.blocks) - 1:
-                        a0, s0, b0 = block(a0, s0, b0)
-                    else:
-                        a0, b0 = block(a0, s0, b0)
+                    s0 = block(s0)
                         
-                y_pred_crop, _, _ = self.taskA_head(a0)
+                y_pred_crop, _, _ = self.taskA_head(s0)
 
                 
-                return a, b, feature_matrix, y_pred_raw,  y_pred_crop, None, outB
+                return s0, s0, feature_matrix, y_pred_raw,  y_pred_crop, None, outB
 
 # # 示例使用
 # model = DeepExpertNetwork(mode='train')

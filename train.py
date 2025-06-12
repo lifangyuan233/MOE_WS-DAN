@@ -596,11 +596,11 @@ def main():
     logs = {}
     start_epoch = 0
 
-    net = DeepExpertNetwork(in_channels=3, base_channels=64, expert_channels=128, num_blocks=2, num_task_experts=2, num_shared_experts=1, mode='train')
+    net = WSDAN(num_classes=num_classes, M=config.num_attentions, net=config.net, pretrained=True)
 
     # feature_center: size of (#classes, #attention_maps * #channel_features)
-    # feature_center = torch.zeros(num_classes, config.num_attentions * net.num_features).to(device)
-    feature_center = torch.zeros(num_classes, config.num_attentions * net.taskA_head.num_features).to(device)
+    feature_center = torch.zeros(num_classes, config.num_attentions * net.num_features).to(device)
+    # feature_center = torch.zeros(num_classes, config.num_attentions * net.taskA_head.num_features).to(device)
 
     if config.ckpt:
         # Load ckpt and get state_dict
@@ -638,19 +638,19 @@ def main():
     # scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.9, patience=2)
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=2, gamma=0.9)
 
-    # Unet权重
-    ce_weight = torch.tensor([1.0,  # 肿瘤权重高（小目标需重点优化））
-                            0.5,    # 血管权重中等
-                            0.1])   # 背景权重较低（若背景像素多
-    dice_class_weights = [1.0, 0.5, 0.1]  # 与 CE 权重对齐
-
-    # --- 创建损失函数实例 ---
-    criterion = CombinedLoss(
-        ce_weight=ce_weight,          # 控制交叉熵的类别权重
-        dice_smooth=1e-5,             # 防止分母为0
-        dice_class_weights=dice_class_weights  # 控制Dice的类别权重
-    )
-    criterion = criterion.to(device)  # 确保与模型在同一设备（GPU/CPU）
+    # # Unet权重
+    # ce_weight = torch.tensor([1.0,  # 肿瘤权重高（小目标需重点优化））
+    #                         0.5,    # 血管权重中等
+    #                         0.1])   # 背景权重较低（若背景像素多
+    # dice_class_weights = [1.0, 0.5, 0.1]  # 与 CE 权重对齐
+    #
+    # # --- 创建损失函数实例 ---
+    # criterion = CombinedLoss(
+    #     ce_weight=ce_weight,          # 控制交叉熵的类别权重
+    #     dice_smooth=1e-5,             # 防止分母为0
+    #     dice_class_weights=dice_class_weights  # 控制Dice的类别权重
+    # )
+    # criterion = criterion.to(device)  # 确保与模型在同一设备（GPU/CPU）
 
     ##################################
     # ModelCheckpoint
@@ -687,7 +687,7 @@ def main():
               net=net,
               feature_center=feature_center,
               optimizer=optimizer,
-              criterion=criterion,
+              # criterion=optimizer,
               pbar=pbar)
 
         validate(logs=logs,
@@ -720,7 +720,7 @@ def train(**kwargs):
     net = kwargs['net']
     feature_center = kwargs['feature_center']
     optimizer = kwargs['optimizer']
-    criterion = kwargs['criterion']
+    # criterion = kwargs['criterion']
     pbar = kwargs['pbar']
     
 
@@ -754,35 +754,60 @@ def train(**kwargs):
         mask_background = mask_background.to(device)
         X = X.to(device)
         y = y.to(device)
-        print(X.shape)
+        # print(X.shape)
 
-        with torch.no_grad():
-            mask_origin0 = resize_mask_if_needed(mask_origin, (config.image_size[0] // 2, config.image_size[0] // 2))
-            mask_background0 = resize_mask_if_needed(mask_background, (config.image_size[0] // 2, config.image_size[0] // 2))
-            mask_tumor0 = resize_mask_if_needed(mask_tumor, (config.image_size[0] // 2, config.image_size[0] // 2))
-            mask_vessel0 = resize_mask_if_needed(mask_vessel, (config.image_size[0] // 2, config.image_size[0] // 2)) # 224
-            masks0 = combine_masks(mask_tumor0, mask_vessel0, mask_background0)  # (B,H_in,W_in)  （0=肿瘤，1=血管，2=背景）
-            # print(masks0.shape)   # B 224 224 
-        
+        # with torch.no_grad():
+        #     mask_origin0 = resize_mask_if_needed(mask_origin, (config.image_size[0] // 2, config.image_size[0] // 2))
+        #     mask_background0 = resize_mask_if_needed(mask_background, (config.image_size[0] // 2, config.image_size[0] // 2))
+        #     mask_tumor0 = resize_mask_if_needed(mask_tumor, (config.image_size[0] // 2, config.image_size[0] // 2))
+        #     mask_vessel0 = resize_mask_if_needed(mask_vessel, (config.image_size[0] // 2, config.image_size[0] // 2)) # 224
+        #     masks0 = combine_masks(mask_tumor0, mask_vessel0, mask_background0)  # (B,H_in,W_in)  （0=肿瘤，1=血管，2=背景）
+        #     # print(masks0.shape)   # B 224 224
+        #
         
         ##################################
         # Raw Image
         ##################################
         # raw images forward
-        a, b, feature_matrix, y_pred_raw,  y_pred_crop, y_pred_drop, outB = net(X)
-        # y_pred_raw, feature_matrix, attention_map = net(X)
+        # a, b, feature_matrix, y_pred_raw,  y_pred_crop, y_pred_drop, outB = net(X)
+        y_pred_raw, feature_matrix, attention_map = net(X)
+
 
         # Update Feature Center
         feature_center_batch = F.normalize(feature_center[y], dim=-1)
         feature_center[y] += config.beta * (feature_matrix.detach() - feature_center_batch)
+
+        ##################################
+        # Attention Cropping
+        ##################################
+        with torch.no_grad():
+            # print("crop")
+            # print(X.shape)            # torch.Size([12, 3, 448, 448])
+            # print( attention_map[:, :1, :, :].shape)       # torch.Size([12, 1, 14, 14])
+            crop_images = batch_augment(X, attention_map[:, :1, :, :], mode='crop', theta=(0.4, 0.6), padding_ratio=0.1)
+
+        # crop images forward
+        y_pred_crop, _, _ = net(crop_images)
+
+        ##################################
+        # Attention Dropping
+        ##################################
+        with torch.no_grad():
+            # print("drop")
+            # print(X.shape)      # torch.Size([12, 3, 448, 448])
+            # print( attention_map[:, 1:, :, :].shape)      # torch.Size([12, 1, 14, 14])
+            drop_images = batch_augment(X, attention_map[:, 1:, :, :], mode='drop', theta=(0.2, 0.5))
+
+        # drop images forward
+        y_pred_drop, _, _ = net(drop_images)
 
 
         # loss
         batch_loss = cross_entropy_loss(y_pred_raw, y) / 3. + \
                      cross_entropy_loss(y_pred_crop, y) / 3. + \
                      cross_entropy_loss(y_pred_drop, y) / 3. + \
-                     center_loss(feature_matrix, feature_center_batch) + \
-                     criterion(outB, masks0)
+                     center_loss(feature_matrix, feature_center_batch)
+                     # criterion(outB, masks0)
         
 
         # backward
@@ -866,6 +891,7 @@ def validate(**kwargs):
         # mask_origin, mask_tumor, mask_vessel, image, label
 
         for i, (mask_origin, mask_tumor, mask_vessel, mask_background, X, y) in enumerate(data_loader):
+
             # obtain data
             mask_origin = mask_origin.to(device)
             mask_tumor = mask_tumor.to(device)
@@ -877,8 +903,18 @@ def validate(**kwargs):
             ##################################
             # Raw Image
             ##################################
-            # y_pred_raw, _, attention_map = net(X)
-            a, b, feature_matrix, y_pred_raw,  y_pred_crop, y_pred_drop, outB = net(X)
+            y_pred_raw, _, attention_map = net(X)
+            # a, b, feature_matrix, y_pred_raw,  y_pred_crop, y_pred_drop, outB = net(X)
+
+            ##################################
+            # Object Localization and Refinement
+            ##################################
+            crop_images = batch_augment(X, attention_map, mode='crop', theta=0.1, padding_ratio=0.05)
+            y_pred_crop, _, _ = net(crop_images)
+
+            ##################################
+            # Final prediction
+            ##################################
 
             y_pred = (y_pred_raw + y_pred_crop) / 2.
 

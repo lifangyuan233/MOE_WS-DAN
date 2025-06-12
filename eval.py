@@ -406,8 +406,9 @@ def main():
     ##################################
     # Initialize model
     ##################################
-    # net = WSDAN(num_classes=test_dataset.num_classes, M=config.num_attentions, net=config.net)
-    net = DeepExpertNetwork(in_channels=3, base_channels=64, expert_channels=128, num_blocks=2, num_task_experts=2, num_shared_experts=1, mode='test')
+    net = WSDAN(num_classes=test_dataset.num_classes, M=config.num_attentions, net=config.net)
+
+    # net = DeepExpertNetwork(in_channels=3, base_channels=64, expert_channels=128, num_blocks=2, num_task_experts=2, num_shared_experts=1, mode='test')
 
 
     # Load ckpt and get state_dict
@@ -457,7 +458,12 @@ def main():
             y = y.to(device)
 
             # WS-DAN
-            a, b, feature_matrix, y_pred_raw,  y_pred_crop, y_pred_drop, outB = net(X)
+            # a, b, feature_matrix, y_pred_raw,  y_pred_crop, y_pred_drop, outB = net(X)
+            y_pred_raw, _, attention_maps = net(X)
+            # Augmentation with crop_mask
+            crop_image = batch_augment(X, attention_maps, mode='crop', theta=0.1, padding_ratio=0.05)
+
+            y_pred_crop, _, _ = net(crop_image)
 
             y_pred = (y_pred_raw + y_pred_crop) / 2.
 

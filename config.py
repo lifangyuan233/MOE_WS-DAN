@@ -1,5 +1,5 @@
 version = '3'
-storage = '4'
+storage = '19'
 epoch = 'best'
 
 choose_name = ''            # train + train pro

@@ -57,7 +57,6 @@ class CGCBlock(nn.Module):
         
         '''两个任务模块，一个共享模块'''
         self.n_task = 2
-        self.n_share = 0
 
         self.taskA_experts = nn.ModuleList([
             Expert_net(in_channels, expert_channels) 
@@ -168,15 +167,10 @@ class DeepExpertNetwork(nn.Module):
             crop_images = self.stem(crop_images)
             # crop images forward
             a0 = crop_images
-            s0 = crop_images
             b0 = crop_images
 
             for index, block in enumerate(self.blocks):
-                if index != len(self.blocks) - 1:
-                    a0, s0, b0 = block(a0, s0, b0)
-                else:
-                    a0, b0 = block(a0, s0, b0)
-
+                a0, b0 = block(a0, b0)
 
             y_pred_crop, _, _ = self.taskA_head(a0)
 
@@ -185,14 +179,10 @@ class DeepExpertNetwork(nn.Module):
 
             drop_images = self.stem(drop_images)
             a1 = drop_images
-            s1 = drop_images
             b1 = drop_images
 
             for index, block in enumerate(self.blocks):
-                if index != len(self.blocks) - 1:
-                    a1, s1, b1 = block(a1, s1, b1)
-                else:
-                    a1, b1 = block(a1, s1, b1)
+                a1, b1 = block(a1, b1)
             # drop images forward
             y_pred_drop, _, _ = self.taskA_head(a1)
             
@@ -208,14 +198,11 @@ class DeepExpertNetwork(nn.Module):
 
                 crop_images = self.stem(crop_images)
                 a0 = crop_images
-                s0 = crop_images
                 b0 = crop_images
 
                 for index, block in enumerate(self.blocks):
-                    if index != len(self.blocks) - 1:
-                        a0, s0, b0 = block(a0, s0, b0)
-                    else:
-                        a0, b0 = block(a0, s0, b0)
+                    a0, b0 = block(a0, b0)
+
                         
                 y_pred_crop, _, _ = self.taskA_head(a0)
 

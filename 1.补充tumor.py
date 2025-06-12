@@ -12,7 +12,7 @@ def origin_image(input_path, output_path):
 # 1、水平翻转
 def flip_image(input_path, output_path):
     img = Image.open(input_path)
-
+    qqqq
     flipped_img = img.transpose(Image.FLIP_LEFT_RIGHT)
     flipped_img.save(output_path)
 

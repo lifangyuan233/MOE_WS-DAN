@@ -90,7 +90,7 @@ class WSDAN(nn.Module):
         self.attentions = BasicConv2d(self.num_features, self.M, kernel_size=1)
 
         # Bilinear Attention Pooling
-        self.bap = BAP(pool='GAP')
+        self.bap = BAP(pool='GMP')
 
         # Classification Layer
         self.fc = nn.Linear(self.M * self.num_features, self.num_classes, bias=False)
